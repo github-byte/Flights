@@ -1,6 +1,6 @@
 import { Box, Card } from '@mui/material'
 import React from 'react'
-import useStyles from './styles'
+import useStyles from '../styles'
 
 const NoSearch = (props) => {
     const classes = useStyles();

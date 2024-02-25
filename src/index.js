@@ -11,11 +11,11 @@ const theme = createTheme({
       main: 'rgb(0,0,0)'  //'#428bfe'
     },
     secondary: {
-      main: '#428bfe'
+      main: '#BA9753'
     },
     text: {
       primary: '#212121',  //'#212121',  //'#7c3647',  //'rgba(124, 54, 71, 1)',
-      secondary: '#212121',  //'#384E89',  //'#FBAD23',  //'#ffffff',   //'rgba(255, 255, 255, 1)',
+      secondary: '#BA9753',  //'#384E89',  //'#FBAD23',  //'#ffffff',   //'rgba(255, 255, 255, 1)',
       paragraph: 'rgba(0, 0, 0, 0.54)',
       disabled: 'rgba(0, 0, 0, 0.38)',
       hint: 'rgba(0, 0, 0, 0.54)',

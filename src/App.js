@@ -1,16 +1,25 @@
 import './App.css';
-import { Box } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import SearchResults from './searchResults';
-import LandingPage from './landingPage';
+import LandingPage from './home/index';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './navbar'
+import { MainContext } from './utility';
 
-function App() {
-  return (
+const App = () => {
+  const matches = useMediaQuery('(min-width:600px)');
+
+  return (<MainContext.Provider value={{ deskTopView: matches }}>
     <Box className="App">
-      <Navbar />
-      <SearchResults />
-      {/* <LandingPage/> */}
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<LandingPage/>} />
+          <Route path='/search' element={<SearchResults />} />
+        </Routes>
+      </BrowserRouter>
     </Box>
+  </MainContext.Provider>
   );
 }
 

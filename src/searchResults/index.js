@@ -1,62 +1,51 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react'
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import SearchImageCard from './searchImgCard';
 import ResultCard from './resultCard';
-import axios from 'axios'
+import { useLocation } from 'react-router-dom'
 import Filters from './filters';
-import { FlightsResultsContext } from '../utility';
-import { API_URL } from '../constants';
+import { FlightsResultsContext, MainContext, getFlightsData } from '../utility';
 import NoSearch from './noSearch';
+import SearchData from './searchData';
 
 const SearchResults = (props) => {
-  const [flightResults, setFlightResults] = useState([])
-  const [originalRes, setOriginalRes] = useState([])
-  
+  const location = useLocation();
+  const { state = {} } = location || {}
+  const { source = {}, destination = {}, date = '', apiData = [] } = state || {};
+  const [flightResults, setFlightResults] = useState(apiData)
+  const [originalRes, setOriginalRes] = useState(apiData)
+  const { deskTopView = false } = useContext(MainContext)
+  const { label: sourceLabel = '' } = source || {};
+  const { label: destinationLabel = '' } = destination || {}
   useEffect(() => {
-    axios.get(API_URL, {
-      headers: {
-        "Content-Type": "application/json",
-        source: "website",
-      },
-    })
-      .then((response) => {
-        // handle success
-        console.log("response getapi ", response, response.data);
-        if (response.status >= 200 && response.status < 300 && response.data) {
-          let { data = {} } = response.data || {};
-          let { result = [] } = data
-          setFlightResults(result)
-          setOriginalRes(result)
-        }
-        return response; //{data: response.data, stats}
-      })
-      .catch(function (error) {
-        // handle error
-        let { response = {} } = error;
-        return { err: error, status: response.status };
-      });
-  }, [])
-  console.log("inside fight context", flightResults)
+    getFlightsData(sourceLabel, destinationLabel, date, setOriginalRes, setFlightResults)
+  }, [sourceLabel, destinationLabel, apiData, date])
   const flightContext = {
     flightResults,
     setFlightResults,
-    originalRes
+    originalRes,
+    setOriginalRes
   }
   return (<FlightsResultsContext.Provider value={flightContext}>
     <Box height="100vh">
       <SearchImageCard />
-      <Box width='50%' ml='auto' mr='auto' >
-        <Box>
-          <Typography sx={{ textAlign: 'left' }} variant="body1" color="initial">Search/Fights</Typography>
+      <Box width={deskTopView ? '60%' : '90%'} ml='auto' mr='auto' >
+        <Box mt={3} mb={3}>
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link underline="hover" color="inherit" href="/">
+              Home
+            </Link>
+            <Typography color="initial">Search Page</Typography>
+          </Breadcrumbs>
         </Box>
-        <Box>
-          <Typography sx={{ textAlign: 'left' }} variant="body1" color="initial">Search/Flights</Typography>
+        <Box mt={4} mb={5}>
+          <SearchData />
         </Box>
-        <Box display='flex' justifyContent='space-between'>
-          <Box>
+        <Box display='flex' flexDirection={deskTopView ? 'row' : 'column'} justifyContent='space-between'>
+          <Box width={!deskTopView ? '95%' : '25%'} mb={2}>
             <Filters flightResults={flightResults} />
           </Box>
-          <Box>
+          <Box width={deskTopView ? '70%' : '100%'}>
             {flightResults && flightResults?.length > 0 ? flightResults?.map((item, index) => {
               return (<ResultCard index={index} item={item} flightResults={flightResults} />)
             }) : <NoSearch />}

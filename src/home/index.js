@@ -6,8 +6,8 @@ import { MainContext, getFlightsData } from '../utility'
 const Home = () => {
   const theme = useTheme();
   const [apiData, setApiData] = useState([])
-  const [source, setSource] = useState({})
-  const [destination, setDestination] = useState({})
+  const [source, setSource] = useState(null)
+  const [destination, setDestination] = useState(null)
   const [date, setDate] = useState('')
   const { deskTopView = true } = useContext(MainContext)
   useEffect(() => {

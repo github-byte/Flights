@@ -13,6 +13,7 @@ const Search = ({ apiData = [], source = null, destination = null, date = null, 
     const [arrivalAirports, setArrivalAirports] = useState([]);
     const [departureAirports, setDepartureAirports] = useState([]);
     const { deskTopView = false } = useContext(MainContext)
+    console.log("inside source", source, destination)
     useEffect(() => {
         if (!apiData || apiData?.length <= 0) return;
         let arrivalSet = new Set();
@@ -35,9 +36,11 @@ const Search = ({ apiData = [], source = null, destination = null, date = null, 
         departureSet.forEach((item) => {
             departureArr.push({ value: item, label: item })
         })
-        setSource(departureArr?.[0])
-        setDestination(arrivalArr?.[0])
-        setDate(dateData)
+        if (source === null && destination === null) {
+            setSource(departureArr?.[0])
+            setDestination(arrivalArr?.[0])
+            setDate(dateData)
+        }
         setArrivalAirports([...arrivalArr]);
         setDepartureAirports([...departureArr]);
     }, [apiData])
@@ -45,7 +48,7 @@ const Search = ({ apiData = [], source = null, destination = null, date = null, 
         getFlightsData(source?.value, destination?.value, date, setOriginalRes, setFlightResults)
         setIsEdit(!isEdit);
     }
-    console.log("in flight122", departureAirports, departureAirports?.[0])
+    console.log("in flight122", source, destination, departureAirports, departureAirports?.[0])
     return (
         <Box>
             <Card className={classes.activeCommunityCard}>
@@ -53,11 +56,11 @@ const Search = ({ apiData = [], source = null, destination = null, date = null, 
                     <Grid container spacing={2}>
                         <Grid sx={{ display: 'flex' }} md={4} xs={12} item>
                             {deskTopView && <img style={{ marginRight: '20px' }} alt='flight1' src={FLIGHT_ARRIVAL} />}
-                            <Autocomplete defaultValue={departureAirports?.[0]} sx={{ width: '100%' }} freeSolo value={source} onChange={(e, val) => setSource(val)} options={departureAirports} renderInput={(params) => <TextField {...params} label="Departure" />} />
+                            <Autocomplete sx={{ width: '100%' }} freeSolo value={source} onChange={(e, val) => setSource(val)} options={departureAirports} renderInput={(params) => <TextField {...params} label="Departure" />} />
                         </Grid>
                         <Grid sx={{ display: 'flex' }} md={4} xs={12} item>
                             {deskTopView && <img style={{ marginRight: '20px' }} alt='flight1' src={FLIGHT_DEPARTURE} />}
-                            <Autocomplete defaultValue={arrivalAirports?.[0]} sx={{ width: '100%' }} freeSolo value={destination} onChange={(e, val) => setDestination(val)} options={arrivalAirports} renderInput={(params) => <TextField {...params} label="Arrival" />} />
+                            <Autocomplete sx={{ width: '100%' }} freeSolo value={destination} onChange={(e, val) => setDestination(val)} options={arrivalAirports} renderInput={(params) => <TextField {...params} label="Arrival" />} />
                         </Grid>
                         <Grid sx={{ display: 'flex', alignItems: 'center' }} md={4} xs={12} item>
                             {deskTopView && <CalendarMonthIcon sx={{ color: theme.palette.text.secondary, height: '100%', mr: '20px' }} />}

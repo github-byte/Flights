@@ -6,12 +6,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    gap: "8px",
+    borderRadius: `${16} !important`,
     padding: theme.spacing(1.5),
-    height: "200px",
-    width: "calc(20% - 21px)",
-    boxShadow: "1px 3px 12px rgba(0, 0, 0, 0.08) !important",
-    borderRadius: "8px",
+    boxShadow: "0 0 10px 0 rgba(0,0,0,.12) !important",
     "&:hover": {
       boxShadow:
         "0px 1px 8px 0px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 3px 3px -2px rgba(0,0,0,0.12)",

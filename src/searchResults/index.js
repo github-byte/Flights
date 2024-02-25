@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import SearchImageCard from './searchImgCard';
 import ResultCard from './resultCard';
 import axios from 'axios'
 import Filters from './filters';
+import { FlightsResultsContext } from '../utility';
+import { API_URL } from '../constants';
+import NoSearch from './noSearch';
 
 const SearchResults = (props) => {
   const [flightResults, setFlightResults] = useState([])
-
+  const [originalRes, setOriginalRes] = useState([])
+  
   useEffect(() => {
-    axios.get('https://api.npoint.io/4829d4ab0e96bfab50e7', {
+    axios.get(API_URL, {
       headers: {
         "Content-Type": "application/json",
         source: "website",
@@ -22,34 +26,45 @@ const SearchResults = (props) => {
           let { data = {} } = response.data || {};
           let { result = [] } = data
           setFlightResults(result)
+          setOriginalRes(result)
         }
         return response; //{data: response.data, stats}
       })
       .catch(function (error) {
         // handle error
         let { response = {} } = error;
-        console.log("catch error ", error, response);
         return { err: error, status: response.status };
       });
   }, [])
-  
-  return (
+  console.log("inside fight context", flightResults)
+  const flightContext = {
+    flightResults,
+    setFlightResults,
+    originalRes
+  }
+  return (<FlightsResultsContext.Provider value={flightContext}>
     <Box height="100vh">
       <SearchImageCard />
-      <Box></Box>
-      <Box></Box>
-      <Box width='50%' ml='auto' mr='auto' display='flex' justifyContent='space-between'>
+      <Box width='50%' ml='auto' mr='auto' >
         <Box>
-          <Filters />
+          <Typography sx={{ textAlign: 'left' }} variant="body1" color="initial">Search/Fights</Typography>
         </Box>
-        <Box position="relative">
-          {/* {flightResults?.map((item) => {
-            return (<ResultCard item={item} flightResults={flightResults} />)
-          })} */}
-          <ResultCard item={flightResults?.[0]} flightResults={flightResults} />
+        <Box>
+          <Typography sx={{ textAlign: 'left' }} variant="body1" color="initial">Search/Flights</Typography>
+        </Box>
+        <Box display='flex' justifyContent='space-between'>
+          <Box>
+            <Filters flightResults={flightResults} />
+          </Box>
+          <Box>
+            {flightResults && flightResults?.length > 0 ? flightResults?.map((item, index) => {
+              return (<ResultCard index={index} item={item} flightResults={flightResults} />)
+            }) : <NoSearch />}
+          </Box>
         </Box>
       </Box>
     </Box>
+  </FlightsResultsContext.Provider>
   )
 
 }
